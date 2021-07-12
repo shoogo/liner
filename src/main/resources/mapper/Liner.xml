@@ -35,6 +35,7 @@
         </selectKey>
 
     </insert>
+
     <select id="selectThemeSn" resultType="java.lang.Integer">
         SELECT THEME_SN
         FROM user_theme UT
@@ -138,4 +139,22 @@
         FROM THEME_INFO
         WHERE THEME_ID = #{id}
     </select>
+    <select id="selectUserTheme" resultType="com.example.liner.domain.HighlightVO">
+        select User_ID
+            , THEME_ID
+            , STATUS
+            , DEFAULT_YN
+        from user_theme
+        WHERE USER_ID = #{userId} AND THEME_ID = #{themeId}
+    </select>
+    <delete id="deleteMyTheme">
+        update user_theme
+        set status = '0'
+        WHERE USER_ID = #{userId} AND THEME_ID = #{themeId}
+    </delete>
+    <delete id="deleteMyThemeInfo">
+        update theme_info
+        set status = '0'
+        WHERE THEME_ID = #{themeId}
+    </delete>
 </mapper>

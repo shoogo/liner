@@ -33,4 +33,10 @@ public interface LinerMapper {
     int selectUserThemeColor(UserThemeVO userThemeVO);
 
     List<String> duplicationCheck(ThemeVO theme);
+
+    HighlightVO selectUserTheme(HighlightVO highlightVO);
+
+    void deleteMyTheme(HighlightVO highlightVO);
+
+    void deleteMyThemeInfo(HighlightVO highlightVO);
 }

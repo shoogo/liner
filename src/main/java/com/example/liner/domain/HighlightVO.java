@@ -13,5 +13,7 @@ public class HighlightVO {
     private int themeSn;
     private String text;
     private int themeId;
+    private String status;
+    private String defaultYn;
 
 }
