@@ -79,8 +79,9 @@ create table user_theme
     THEME_ID int auto_increment
         primary key,
     STATUS char default '1' null comment '사용여부(0:미사용, 1:사용, 2:삭제)',
-    CREATE_DATE datetime default current_timestamp() null,
-    UPDATE_DATE datetime null
+    default_YN char default '0' null comment '기본값 여부(0: 일반, 1: 기본값1, 2: 기본값2)',
+    UPDATE_DATE datetime null,
+    CREATE_DATE datetime default current_timestamp() null
 );
 
 create index user_theme_USER_ID_index
