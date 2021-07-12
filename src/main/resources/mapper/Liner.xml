@@ -76,6 +76,7 @@
                  INNER JOIN page_info  D ON A.PAGE_ID = D.PAGE_ID
         WHERE A.USER_ID = #{userId} and PAGE_URL = #{pageUrl}
             AND A.STATUS = 1
+        ORDER BY UPDATE_DATE DESC, CREATE_DATE DESC
     </select>
     <select id="selectMyPageHighlight" resultType="com.example.liner.domain.MyPageHighlightVO">
 
@@ -86,6 +87,7 @@
             , PAGE_URL
         FROM PAGE_INFO
         WHERE USER_ID = #{userId} AND STATUS = '1'
+        ORDER BY UPDATE_DATE DESC, CREATE_DATE DESC
     </select>
 
     <update id="updateHighlight">
