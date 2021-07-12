@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.liner.mapper.LinerMapper">
+
+
+    <insert id="addPageInfo">
+        INSERT INTO page_info(USER_ID, PAGE_URL)
+        VALUE (
+            #{userId}
+            , #{pageUrl}
+        )
+        <selectKey keyColumn="page_id" keyProperty="pageId" resultType="java.lang.Integer" order="AFTER">
+            SELECT MAX(PAGE_ID) page_id
+            FROM PAGE_INFO
+            WHERE   USER_ID = #{userId}
+                AND PAGE_URL = #{pageUrl}
+        </selectKey>
+    </insert>
+    <insert id="addHighlight">
+        INSERT INTO user_hiGHlight(USER_ID, PAGE_ID, THEME_SN, TEXT)
+        VALUE (
+            #{userId}
+            , #{pageId}
+            , #{themeSn}
+            , #{text}
+        )
+        <selectKey keyColumn="HIGHLIGHT_ID" keyProperty="highlightId" resultType="java.lang.Integer">
+            SELECT MAX(HIGHLIGHT_ID) HIGHLIGHT_ID
+            FROM user_highlight
+            WHERE   USER_ID = #{userId}
+            AND PAGE_ID = #{pageId}
+        </selectKey>
+
+    </insert>
+    <select id="selectThemeSn" resultType="java.lang.Integer">
+        SELECT THEME_SN
+        FROM user_theme UT
+            INNER JOIN theme_info ti on UT.THEME_ID = ti.THEME_ID
+        WHERE   UT.STATUS = 1
+            AND USER_ID = #{userId}
+            AND COLOR_HEX = #{colorHex}
+    </select>
+    <select id="checkColor" resultType="java.lang.Integer">
+        SELECT THEME_SN
+        FROM user_theme UT
+                 INNER JOIN theme_info ti on UT.THEME_ID = ti.THEME_ID
+        WHERE   UT.STATUS = 1
+          AND USER_ID = #{userId}
+          AND COLOR_HEX = #{colorHex}
+    </select>
+    <select id="selectUserHighlight" resultType="com.example.liner.domain.HighlightVO">
+        select HIGHLIGHT_ID
+             , A.USER_ID
+             , PAGE_ID
+             , C.COLOR_HEX
+             , TEXT
+        from user_highlight A
+            INNER JOIN user_theme B ON A.USER_ID = B.USER_ID AND B.STATUS='1'
+            INNER JOIN THEME_INFO C ON A.THEME_SN = C.THEME_SN AND B.THEME_ID = C.THEME_ID
+        WHERE HIGHLIGHT_ID = #{highlightId}
+
+    </select>
+    <select id="selectMyHighlight" resultType="com.example.liner.domain.HighlightVO">
+        select HIGHLIGHT_ID
+             , A.USER_ID
+             , A.PAGE_ID
+             , C.COLOR_HEX
+             , TEXT
+             , PAGE_URL
+        from user_highlight A
+                 INNER JOIN user_theme B ON A.USER_ID = B.USER_ID AND B.STATUS='1'
+                 INNER JOIN THEME_INFO C ON A.THEME_SN = C.THEME_SN AND B.THEME_ID = C.THEME_ID
+                 INNER JOIN page_info  D ON A.PAGE_ID = D.PAGE_ID
+        WHERE A.USER_ID = #{userId} and PAGE_URL = #{pageUrl}
+            AND A.STATUS = 1
+    </select>
+    <select id="selectMyPageHighlight" resultType="com.example.liner.domain.MyPageHighlightVO">
+
+
+    </select>
+    <select id="selectMyPage" resultType="com.example.liner.domain.MyPageHighlightVO">
+        SELECT PAGE_ID
+            , PAGE_URL
+        FROM PAGE_INFO
+        WHERE USER_ID = #{userId} AND STATUS = '1'
+    </select>
+
+    <update id="updateHighlight">
+        UPDATE USER_HIGHLIGHT
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="themeSn != null and themeSn != ''">theme_sn = #{themeSn},</if>
+            <if test="text  != null and text != ''">text = #{text },</if>
+        </trim>
+        WHERE   HIGHLIGHT_ID = #{highlightId}
+            AND USER_ID =   #{userId}
+    </update>
+
+    <update id="deleteHighlight">
+        UPDATE USER_HIGHLIGHT
+        SET STATUS = 0
+        WHERE   HIGHLIGHT_ID = #{highlightId}
+          AND USER_ID =   #{userId}
+    </update>
+    <update id="updateMyTheme">
+        UPDATE user_theme
+        SET STATUS = (CASE WHEN THEME_ID = #{themeId} THEN 1 ELSE 0
+            END )
+          , UPDATE_DATE = NOW()
+        WHERE USER_ID = #{userId}
+    </update>
+    <update id="updateMyThemeColor" >
+        INSERT INTO theme_info(THEME_ID, THEME_SN, COLOR_HEX)
+            VALUE(
+                #{themeId}
+                ,#{themeSn}
+                ,#{colorHex}
+            )
+        ON DUPLICATE KEY
+            UPDATE
+                COLOR_HEX = #{colorHex}
+                , UPDATE_DATE = NOW()
+    </update>
+
+    <select id="selectUserThemeColor" resultType="java.lang.Integer">
+        select count(*) cnt
+        from user_theme A
+                 INNER JOIN theme_info B ON A.THEME_ID = B.THEME_ID
+        WHERE USER_ID = #{userId} AND a.THEME_ID = #{theme.id}
+    </select>
+
+    <select id="duplicationCheck" resultType="java.lang.String">
+        SELECT color_hex
+        FROM THEME_INFO
+        WHERE THEME_ID = #{id}
+    </select>
+</mapper>

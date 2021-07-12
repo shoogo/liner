@@ -1,0 +1,70 @@
+POST http://localhost:8888/liner/highlight
+Content-Type: application/json
+
+{
+  "userId": "TEST",
+  "pageUrl": "www.getliner.com",
+  "colorHex": "#ffff8d",
+  "text": "라이너 사전과제 입니다."
+}
+
+
+###
+PUT http://localhost:8888/liner/highlight
+Content-Type: application/json
+
+{
+  "highlightId": 5,
+  "userId": "TEST",
+  "colorHex": "#ffff8d",
+  "text": "변경된 텍스트입니다"
+}
+
+###
+GET http://localhost:8888/liner/my-highlight
+Content-Type: application/json
+
+{
+  "userId": "TEST",
+  "pageUrl": "www.naver.com"
+}
+
+###
+GET http://localhost:8888/liner/mypage-highlight
+Content-Type: application/json
+
+{
+  "userId": "TEST"
+}
+
+
+###
+DELETE http://localhost:8888/liner/highlight
+Content-Type: application/json
+
+{
+  "highlightId": 2,
+  "userId": "TEST"
+}
+
+
+###
+PUT http://localhost:8888/liner/my-theme
+Content-Type: application/json
+
+{
+  "themeId": 2,
+  "userId": "TEST"
+}
+
+###
+PUT http://localhost:8888/liner/my-theme-color
+Content-Type: application/json
+
+{
+  "userId": "TEST",
+  "theme": {
+    "id": 2,
+    "colors": ["#000010", "#111111", "#222222", "#aaaaaa"]
+  }
+}
