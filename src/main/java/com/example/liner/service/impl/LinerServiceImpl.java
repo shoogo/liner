@@ -105,8 +105,9 @@ public class LinerServiceImpl implements LinerService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteMyTheme(HighlightVO highlightVO) {
-
+//        mapper.deleteMyTheme(highlightVO);
     }
 }
